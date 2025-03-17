@@ -1,16 +1,17 @@
 import csv
 import os.path
-import self_made_timer
+from scripts import self_made_timer
 
 
-class database_csv:
+class databaseCsv:
     def __init__(self):
         # Set the path to database file
         dir_path = os.path.dirname(__file__)
         self.database_file = f'{dir_path}/prime_factor_database.csv'
         self.csv_fields = ['Number', 'Factors']
 
-    def write_csv_headers(self):
+    def _write_csv_headers(self):
+        '''Write headers found in init'''
         try:
             with open(self.database_file, 'w', newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=self.csv_fields, delimiter='|')
@@ -19,7 +20,8 @@ class database_csv:
         except Exception as e:
             print(f"Error occured: {e}")
 
-    def save_result_csv(self, number, factors):
+    def _write_result_csv(self, number, factors):
+        '''Save given results to a new row in csv database'''
         data = [number, ', '.join(map(str,factors))]
 
         try:
@@ -31,16 +33,18 @@ class database_csv:
             print(f"Error occured: {e}")
 
     def save_to_database(self, number, factors):
+        '''Save to the databse. Check firs''' 
         if os.path.exists(self.database_file):
             print(f'Database {self.database_file} exists. Continuing...')
         else:
             print(f'Database {self.database_file} doesn\'t exists. Creating it now...')
-            self.write_csv_headers()
+            self._write_csv_headers()
         
-        self.save_result_csv(number, factors)
+        self._write_result_csv(number, factors)
 
     @self_made_timer.timer_func
     def search_from_database(self, number: str):
+        '''Search factors from database'''
         try:
             factors = []
 
@@ -49,7 +53,6 @@ class database_csv:
 
                 for row in reader:
                     if row[0] == str(number):
-                        # Found number from database.
                         factors = row[1]
                         break
 

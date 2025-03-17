@@ -1,10 +1,11 @@
 import math
-import self_made_timer
-import database
 import sys
+from scripts import self_made_timer, database, save_file
+
 
 @self_made_timer.timer_func
-def prime_factors(number: int) -> list:
+def calculate_prime_factors(number: int) -> list:
+    '''Claculate prime factors for a given number'''
     factors = []
     
     # number of two's that divide n
@@ -31,21 +32,26 @@ def prime_factors(number: int) -> list:
     return factors
     
 def find_prime_factors(number):
+    '''Finds factors for a given number. 
+    Check database first and then calculate if not found'''
     found_database = False
-    factors, t1 = database.database_csv().search_from_database(number)
+    
+    #Check database
+    factors, t1 = database.databaseCsv().search_from_database(number)
     if factors:
         print(f'Found factors for number {number} from database.')
         print(factors)
         found_database = True
+    # If not found from database calculate
     else:
         print(f'Did NOT found {number} from databse.')
-        factors, t1 = prime_factors(number)
+        factors, t1 = calculate_prime_factors(number)
 
     print(found_database)
     return factors, t1, found_database
 
 def validate_given_number(number: int):
-    # Check if the given number is number at all
+    '''Validate if the given number is a positive number'''
     try:
         value = int(number)
     except ValueError:
@@ -57,11 +63,24 @@ def validate_given_number(number: int):
     else:
         return True
 
-if __name__ == "__main__":
-    number = '-1'
+def command_line_prime_factors(number):
+    number = int(number)
     validate = validate_given_number(number)
     if not validate:
         print(f'Your input is not positive number. \nGiven input was: {number}')
         sys.exit()
 
     factors, t1, found_database = find_prime_factors(number)
+
+    # Save to number, factors and time it took to find to a file
+    file_name = save_file.save_to_ouput_file(number, factors, t1)
+
+     # Save the info to database
+    if found_database is False:
+        factors = list(set(factors))
+        database.databaseCsv().save_to_database(number, factors)
+        factors = ', '.join(map(str,factors))
+
+    # Output result
+    print(f'Factors: {factors}. \nTime it take: {t1:.4f}.')
+    print(f'Created file {file_name} with the results.')
