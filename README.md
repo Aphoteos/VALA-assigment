@@ -26,15 +26,17 @@ File name, UI look and feel can be freely chosen, but below is an example for si
 
 Example UI:
 
->python prime_factors.py
-Give me the number: 26541
-Prime factor found: 3
-Prime factor found: 983
-It took 0,93 seconds to find those
+    #>python prime_factors.py
+    Give me the number: 26541
+    Prime factor found: 3
+    Prime factor found: 983
+    It took 0,93 seconds to find those
+
 Example output file content:
-Prime Factors of number 26541 are
-3, 983
-It took 0,93 seconds to find those
+
+    Prime Factors of number 26541 are
+    3, 983
+    It took 0,93 seconds to find those
 
 # How to Install
 
